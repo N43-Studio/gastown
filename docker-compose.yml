@@ -32,6 +32,8 @@ services:
       - ${FOLDER}:/gt
     ports:
       - "${DASHBOARD_PORT:-8080}:8080"
+    stop_signal: SIGTERM
+    stop_grace_period: 15s
     command: sleep infinity
 
     # Exec into the container with: docker compose exec gastown zsh
