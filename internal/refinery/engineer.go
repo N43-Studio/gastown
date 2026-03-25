@@ -25,6 +25,14 @@ import (
 	"github.com/steveyegge/gastown/internal/rig"
 )
 
+// shortSHA returns at most 8 characters of a SHA for display.
+func shortSHA(sha string) string {
+	if len(sha) > 8 {
+		return sha[:8]
+	}
+	return sha
+}
+
 // DefaultStaleClaimTimeout is the default duration after which a claimed MR
 // is considered abandoned and eligible for re-claim. This is conservative
 // to avoid re-claiming MRs that are legitimately processing long test suites.
@@ -519,7 +527,7 @@ func (e *Engineer) doMerge(ctx context.Context, branch, target, sourceIssue stri
 			if sc.NewSHA == "" {
 				continue // Submodule removed, nothing to push
 			}
-			_, _ = fmt.Fprintf(e.output, "[Engineer] Pushing submodule %s (commit %s)...\n", sc.Path, sc.NewSHA[:8])
+			_, _ = fmt.Fprintf(e.output, "[Engineer] Pushing submodule %s (commit %s)...\n", sc.Path, shortSHA(sc.NewSHA))
 			if pushErr := e.git.PushSubmoduleCommit(sc.Path, sc.NewSHA, "origin"); pushErr != nil {
 				return ProcessResult{
 					Success: false,
@@ -662,7 +670,7 @@ func (e *Engineer) doMerge(ctx context.Context, branch, target, sourceIssue stri
 		_, _ = fmt.Fprintf(e.output, "[Engineer] Auto-push disabled, skipping push to origin/%s\n", target)
 	}
 
-	_, _ = fmt.Fprintf(e.output, "[Engineer] Successfully merged: %s\n", mergeCommit[:8])
+	_, _ = fmt.Fprintf(e.output, "[Engineer] Successfully merged: %s\n", shortSHA(mergeCommit))
 	return ProcessResult{
 		Success:     true,
 		MergeCommit: mergeCommit,
@@ -1276,7 +1284,7 @@ The Refinery will automatically retry the merge after you force-push.`,
 		mr.Branch,
 		mr.ID,
 		mr.Branch,
-		mr.Target, mainSHA[:8],
+		mr.Target, shortSHA(mainSHA),
 		mr.SourceIssue,
 		retryCount,
 		mr.Branch,

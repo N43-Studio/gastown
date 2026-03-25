@@ -395,7 +395,7 @@ func (e *Engineer) fastForwardBatch(ctx context.Context, stacked []*MRInfo, targ
 	for i, mr := range stacked {
 		ids[i] = mr.ID
 	}
-	_, _ = fmt.Fprintf(e.output, "[Batch] Successfully merged batch: %s (commit %s)\n", strings.Join(ids, ", "), tipSHA[:8])
+	_, _ = fmt.Fprintf(e.output, "[Batch] Successfully merged batch: %s (commit %s)\n", strings.Join(ids, ", "), shortSHA(tipSHA))
 
 	result.Merged = stacked
 	result.MergeCommit = tipSHA
