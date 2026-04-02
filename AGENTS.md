@@ -71,7 +71,7 @@ git push              # Push to remote
 
 <!-- end-beads-agent-instructions -->
 
-<!-- gastown-agent-instructions-v1 -->
+<!-- gastown-agent-instructions-v2 -->
 
 ---
 
@@ -123,6 +123,31 @@ gt mail send --human -s "Subject" -m "Message to overseer"
 | Wake a sleeping agent | `gt nudge <target> "msg"` | Immediate delivery |
 | Send detailed task/info | `gt mail send <target> -s "..." --stdin` | Persists across restarts |
 | Both: send + wake | `gt mail send` then `gt nudge` | Mail carries payload, nudge wakes |
+
+### When Human Approval is Required
+
+Some actions block on a permission prompt from the agent runtime:
+- Editing `.claude/` configuration files (`.claude/commands/`, `.claude/settings.json`, etc.)
+- Destructive shell operations (force-push, `rm -rf`, database drops)
+- Operations guarded by `--dangerously-skip-permissions`
+- Any tool call that triggers a "do you want to allow?" permission dialog
+
+**Before attempting any such action**, mail mayor so the human can be notified:
+
+```bash
+gt mail send mayor/ -s "HUMAN_INPUT_REQUIRED: <brief description>" --stdin <<'BODY'
+About to: <describe the action>
+Why: <why you need to do this>
+What will happen: The agent will block on a permission prompt until the user approves.
+BODY
+gt nudge mayor "Check mail — human approval needed"
+```
+
+Then **proceed immediately** — attempt the action. Mayor will notify the user to
+come unblock the permission prompt.
+
+**Do NOT** wait for a reply before attempting.
+**Do NOT** abandon the action — mail is the notification, not a gate.
 
 ### Context Recovery
 

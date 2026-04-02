@@ -411,6 +411,31 @@ note and continue later.
 For long-running operations, prefer `run_in_background: true` on Task and Bash
 tools — background tasks survive turn interruption.
 
+### When Human Approval is Required (HUMAN_INPUT_REQUIRED)
+
+Some actions block on a permission prompt from the agent runtime:
+- Editing `.claude/` configuration files (`.claude/commands/`, `.claude/settings.json`, etc.)
+- Destructive shell operations (force-push, `rm -rf`, database drops)
+- Operations guarded by `--dangerously-skip-permissions`
+- Any tool call that triggers a "do you want to allow?" permission dialog
+
+**Before attempting any such action**, mail mayor so the human can be notified to
+come unblock the permission prompt:
+
+```bash
+{{ cmd }} mail send mayor/ -s "HUMAN_INPUT_REQUIRED: <brief description>" --stdin <<'BODY'
+About to: <describe the action>
+Why: <why you need to do this>
+What will happen: The agent will block on a permission prompt until the user approves.
+BODY
+{{ cmd }} nudge mayor "Check mail — human approval needed"
+```
+
+Then **proceed immediately** — attempt the action. Mayor will notify the user.
+
+**Do NOT** wait for a reply before attempting.
+**Do NOT** abandon the action — mail is the notification, not a gate.
+
 ## Context Cycling (Handoff)
 
 When your context fills up, cycle using `{{ cmd }} handoff`.
