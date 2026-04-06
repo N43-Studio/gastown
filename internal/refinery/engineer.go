@@ -588,7 +588,7 @@ func (e *Engineer) doMerge(ctx context.Context, branch, target, sourceIssue stri
 	// local squash merge + direct push. This respects branch protection rules
 	// and preserves the PR audit trail.
 	if e.config.MergeStrategy == "pr" {
-		return e.doMergePR(ctx, branch, target)
+		return e.doMergePR(branch, target)
 	}
 
 	// Step 5: Perform the actual merge using squash merge
@@ -707,7 +707,7 @@ func (e *Engineer) doMerge(ctx context.Context, branch, target, sourceIssue stri
 // doMergePR handles merging via GitHub's PR merge API (merge_strategy=pr).
 // This respects branch protection rules including required reviews.
 // Called from doMerge after quality gates have passed.
-func (e *Engineer) doMergePR(ctx context.Context, branch, target string) ProcessResult {
+func (e *Engineer) doMergePR(branch, target string) ProcessResult {
 	_, _ = fmt.Fprintln(e.output, "[Engineer] Using PR merge strategy (merge_strategy=pr)")
 
 	// Step PR.1: Find the GitHub PR for this branch
