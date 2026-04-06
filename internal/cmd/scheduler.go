@@ -137,10 +137,7 @@ func runSchedulerStatus(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("loading scheduler state: %w", err)
 	}
 
-	scheduled, err := listScheduledBeads(townRoot)
-	if err != nil {
-		return fmt.Errorf("listing scheduled beads: %w", err)
-	}
+	scheduled := listScheduledBeads(townRoot)
 
 	activePolecats := countActivePolecats()
 
@@ -199,10 +196,7 @@ func runSchedulerList(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	scheduled, err := listScheduledBeads(townRoot)
-	if err != nil {
-		return fmt.Errorf("listing scheduled beads: %w", err)
-	}
+	scheduled := listScheduledBeads(townRoot)
 
 	if schedulerListJSON {
 		enc := json.NewEncoder(os.Stdout)
@@ -358,11 +352,11 @@ func runSchedulerRun(cmd *cobra.Command, args []string) error {
 // listScheduledBeads returns info about all scheduled beads for display.
 // Reconciles sling context beads with work bead readiness to mark blocked status.
 // Uses batch fetch for work bead info to avoid N+1 subprocess spawns.
-func listScheduledBeads(townRoot string) ([]scheduledBeadInfo, error) {
+func listScheduledBeads(townRoot string) []scheduledBeadInfo {
 	allContexts := listAllSlingContexts(townRoot)
 
 	if len(allContexts) == 0 {
-		return nil, nil
+		return nil
 	}
 
 	// Collect work bead IDs from contexts for targeted fetch
@@ -418,11 +412,11 @@ func listScheduledBeads(townRoot string) ([]scheduledBeadInfo, error) {
 		})
 	}
 
-	return result, nil
+	return result
 }
 
 // listAllScheduledBeadIDs returns the work bead IDs of all scheduled beads.
-func listAllScheduledBeadIDs(townRoot string) ([]string, error) {
+func listAllScheduledBeadIDs(townRoot string) []string {
 	allContexts := listAllSlingContexts(townRoot)
 
 	var ids []string
@@ -438,7 +432,7 @@ func listAllScheduledBeadIDs(townRoot string) ([]string, error) {
 		}
 	}
 
-	return ids, nil
+	return ids
 }
 
 // beadsSearchDirs returns directories to scan for scheduled beads:
