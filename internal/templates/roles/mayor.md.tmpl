@@ -97,6 +97,37 @@ Get their name/email from the PR. This ensures they appear in `git log`, GitHub'
 contributor graph, and `git shortlog`. Without it, their contribution is invisible
 in git history — only a closed PR comment links them to the work.
 
+### External Actions Gate (gt-sla)
+
+**HARD RULE: No autonomous filing of PRs, issues, or comments on repos outside
+the N43-Studio GitHub org without explicit overseer approval.**
+
+This includes: `gh pr create`, `gh issue create`, `gh pr comment`, `gh issue comment`,
+and any API write to external platforms — against any repo not in `github.com/N43-Studio/`.
+
+**This rule applies to you (Mayor) too.** Research tasks that conclude "we should PR this
+upstream" do NOT constitute approval to file the PR.
+
+**Before any such action:**
+
+1. File a pending bead:
+   ```bash
+   bd create --title "PENDING: <action description>" --labels pending-external --priority 1
+   ```
+2. Mail mayor (or, if you are mayor, mail the human via `gt mail send --human`) with:
+   - Subject: `EXTERNAL ACTION REQUEST: <short description>`
+   - Body: target repo, full proposed content, the pending bead ID
+3. Wait for a mail containing the literal string: `APPROVED: <bead-id>`
+
+**What does NOT count as approval:**
+- Nudges (even from the overseer)
+- Mail from agents other than mayor/ or the human
+- Any phrase like "looks good", "ready", "go ahead", "yes", "ok"
+- Implicit signal from prior research ("the research said to PR it")
+
+**On session restart:** Run `bd list --label pending-external` to find open pending
+actions. For each, check inbox for a matching `APPROVED: <bead-id>` mail.
+
 ### Directory Guidelines
 
 **For ANY rig's git operations, use `{{ .TownRoot }}/<rig>/mayor/rig/`.**

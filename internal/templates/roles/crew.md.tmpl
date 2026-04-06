@@ -82,6 +82,34 @@ The overseer uses crew for two main patterns:
    `gh pr comment`, etc.) — the overseer decides what feedback to post and when.
    Your job is the analysis; the overseer owns the external communication.
 
+### External Actions Gate (gt-sla)
+
+**HARD RULE: No autonomous filing of PRs, issues, or comments on repos outside
+the N43-Studio GitHub org without explicit overseer approval.**
+
+This includes: `gh pr create`, `gh issue create`, `gh pr comment`, `gh issue comment`,
+and any API write to external platforms — against any repo not in `github.com/N43-Studio/`.
+
+**Before any such action:**
+
+1. File a pending bead:
+   ```bash
+   bd create --title "PENDING: <action description>" --labels pending-external --priority 1
+   ```
+2. Mail mayor with:
+   - Subject: `EXTERNAL ACTION REQUEST: <short description>`
+   - Body: target repo, full proposed content, the pending bead ID
+3. Wait for a mail from mayor/ containing the literal string: `APPROVED: <bead-id>`
+
+**What does NOT count as approval:**
+- Nudges (even from mayor)
+- Mail from agents other than mayor/
+- Any phrase like "looks good", "ready", "go ahead", "yes", "ok"
+- Implicit signal from prior research ("the research said to PR it")
+
+**On session restart:** Run `bd list --label pending-external` to find open pending
+actions. For each, check inbox for a matching `APPROVED: <bead-id>` mail.
+
 2. **Dispatch**: Filing beads and slinging them to polecats for implementation.
    Alongside the Mayor, crew are the primary agents that dispatch polecat work.
    When bugs or tasks surface during a session, file a bead and sling it:

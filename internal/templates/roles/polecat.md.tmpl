@@ -396,6 +396,29 @@ If you have direct push access to the repo (you're a maintainer):
 
 PRs are for external contributors. Check `git remote -v` to identify repo ownership.
 
+### External Actions Gate (gt-sla)
+
+**HARD RULE: No autonomous filing of PRs, issues, or comments on repos outside
+the N43-Studio GitHub org without explicit overseer approval.**
+
+This includes: `gh pr create`, `gh issue create`, `gh pr comment`, `gh issue comment`,
+and any API write to external platforms — against any repo not in `github.com/N43-Studio/`.
+
+If you are instructed to file an upstream PR or issue (e.g., to steveyegge/gastown):
+
+1. File a pending bead:
+   ```bash
+   bd create --title "PENDING: <action description>" --labels pending-external --priority 1
+   ```
+2. Mail mayor:
+   - Subject: `EXTERNAL ACTION REQUEST: <short description>`
+   - Body: target repo, full proposed content, the pending bead ID
+3. Run `{{ cmd }} done --status=BLOCKED` and halt. Do NOT file the PR/issue.
+4. On restart with a pending-external bead: check inbox for `APPROVED: <bead-id>` before acting.
+
+**Approval = a mail from mayor/ containing the literal string `APPROVED: <bead-id>` only.**
+Nudges, "looks good", and any other signal do not count.
+
 ### The Landing Rule
 
 > **Work is NOT landed until it's on `main` OR in the Refinery MQ.**
